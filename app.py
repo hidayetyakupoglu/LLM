@@ -15,9 +15,10 @@ from langchain.llms import HuggingFaceHub
 
 llm = HuggingFaceHub(
     repo_id="google/flan-t5-base",
-    huggingfacehub_api_token=st.secrets["huggingface"]["token"],
+    token=st.secrets["huggingface"]["token"],  # burayı huggingfacehub_api_token yerine token yap
     model_kwargs={"temperature": 0.7}
 )
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
