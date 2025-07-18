@@ -11,9 +11,12 @@ st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
 st.title("\U0001F4AC Chat with Your Documents")
 
 # LLM nesnesi tek yerde, token parametresi ile tanımlanıyor
+from langchain.llms import HuggingFaceHub
+
 llm = HuggingFaceHub(
     repo_id="google/flan-t5-base",
-    huggingfacehub_api_token=st.secrets["huggingface"]["token"]
+    huggingfacehub_api_token=st.secrets["huggingface"]["token"],
+    model_kwargs={"temperature": 0.7}
 )
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
