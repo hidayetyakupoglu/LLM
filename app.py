@@ -12,6 +12,14 @@ from langchain.chat_models import ChatOpenAI
 # OpenRouter yerine Langchain'in desteklediği başka bir LLM servisi kullanılmalı
 # ya da OpenAI yerine LlamaCpp, Ollama, HuggingFace, GPT4All, Together, v.s.
 
+from langchain.llms import HuggingFaceHub
+
+llm = HuggingFaceHub(
+    repo_id="mistralai/Mistral-7B-Instruct-v0.1",
+    model_kwargs={"temperature": 0.7},
+    huggingfacehub_api_token=st.secrets["huggingface"]["token"]
+)
+
 st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
 st.title("\U0001F4AC Chat with Your Documents")
 
