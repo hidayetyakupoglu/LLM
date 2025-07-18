@@ -6,3 +6,6 @@ pypdf
 docx2txt
 python-docx
 tiktoken
+sentence-transformers
+transformers
+torch
