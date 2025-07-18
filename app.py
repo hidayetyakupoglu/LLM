@@ -8,14 +8,13 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 
-# API ayarları
-os.environ["OPENAI_API_KEY"] = st.secrets["general"]["openrouter_key"]
-os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
+# OpenRouter API entegrasyonu yerine uygun bir model kullanılmalı
+# OpenRouter yerine Langchain'in desteklediği başka bir LLM servisi kullanılmalı
+# ya da OpenAI yerine LlamaCpp, Ollama, HuggingFace, GPT4All, Together, v.s.
 
-st.set_page_config(page_title="🧠 Chat with Multi-Docs", layout="wide")
-st.title("💬 Chat with Your Documents")
+st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
+st.title("\U0001F4AC Chat with Your Documents")
 
-# Oturum geçmişi
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
@@ -47,12 +46,9 @@ if uploaded_files:
     db = FAISS.from_documents(chunks, embeddings)
     retriever = db.as_retriever()
 
-    llm = ChatOpenAI(
-        model="mistralai/mistral-7b-instruct",
-        temperature=0,
-        openai_api_key=os.environ["OPENAI_API_KEY"],
-        openai_api_base=os.environ["OPENAI_API_BASE"]
-    )
+    # Örnek LLM entegrasyonu (yerel ya da huggingface gibi)
+    from langchain.llms import HuggingFaceHub
+    llm = HuggingFaceHub(repo_id="mistralai/Mistral-7B-Instruct-v0.1", model_kwargs={"temperature": 0.7})
 
     qa_chain = ConversationalRetrievalChain.from_llm(llm, retriever=retriever)
 
@@ -62,11 +58,10 @@ if uploaded_files:
             result = qa_chain.invoke({"question": user_input, "chat_history": st.session_state.chat_history})
             st.session_state.chat_history.append((user_input, result["answer"]))
 
-    # Geçmiş konuşmaları göster
     for q, a in st.session_state.chat_history:
-        with st.chat_message("user", avatar="👤"):
+        with st.chat_message("user", avatar="\U0001F464"):
             st.markdown(q)
-        with st.chat_message("assistant", avatar="🤖"):
+        with st.chat_message("assistant", avatar="\U0001F916"):
             st.markdown(a)
 else:
     st.info("Sohbete başlamadan önce en az bir belge yükleyin.")
