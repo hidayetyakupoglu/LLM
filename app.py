@@ -15,15 +15,13 @@ st.title("\U0001F4AC Chat with Your Documents")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Initialize LLM with error handling
-try:
-    llm = HuggingFaceEndpoint(
-        repo_id="mistralai/Mistral-7B-Instruct-v0.1",
-        task="text-generation",
-        huggingfacehub_api_token=st.secrets["huggingface"]["token"],
-        temperature=0.7,
-        max_new_tokens=512
-    )
+from langchain.chat_models import ChatOpenAI
+
+llm = ChatOpenAI(
+    openai_api_key=st.secrets["openai"]["api_key"],
+    model="gpt-3.5-turbo",  # veya gpt-4
+    temperature=0.7
+)
 except Exception as e:
     st.error(f"LLM başlatılamadı: {str(e)}")
     st.info("Lütfen Hugging Face API tokenınızı kontrol edin. Tokenınızı https://huggingface.co/settings/tokens adresinden alabilirsiniz.")
