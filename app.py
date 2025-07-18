@@ -15,7 +15,7 @@ from langchain.llms import HuggingFaceHub
 
 llm = HuggingFaceHub(
     repo_id="google/flan-t5-base",
-    token=st.secrets["huggingface"]["token"],  # burayı huggingfacehub_api_token yerine token yap
+    huggingfacehub_api_token="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",  # Doğrudan token
     model_kwargs={"temperature": 0.7}
 )
 
