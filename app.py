@@ -1,32 +1,30 @@
 import streamlit as st
-import os
 import tempfile
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
-
-# OpenRouter API entegrasyonu yerine uygun bir model kullanılmalı
-# OpenRouter yerine Langchain'in desteklediği başka bir LLM servisi kullanılmalı
-# ya da OpenAI yerine LlamaCpp, Ollama, HuggingFace, GPT4All, Together, v.s.
-
 from langchain.llms import HuggingFaceHub
 
+st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
+st.title("\U0001F4AC Chat with Your Documents")
+
+# LLM nesnesi tek yerde, token parametresi ile tanımlanıyor
 llm = HuggingFaceHub(
     repo_id="mistralai/Mistral-7B-Instruct-v0.1",
     model_kwargs={"temperature": 0.7},
     huggingfacehub_api_token=st.secrets["huggingface"]["token"]
 )
 
-st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
-st.title("\U0001F4AC Chat with Your Documents")
-
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-uploaded_files = st.file_uploader("PDF, TXT veya DOCX dosyalarını yükleyin", type=["pdf", "txt", "docx"], accept_multiple_files=True)
+uploaded_files = st.file_uploader(
+    "PDF, TXT veya DOCX dosyalarını yükleyin",
+    type=["pdf", "txt", "docx"],
+    accept_multiple_files=True
+)
 
 if uploaded_files:
     all_docs = []
@@ -54,10 +52,6 @@ if uploaded_files:
     db = FAISS.from_documents(chunks, embeddings)
     retriever = db.as_retriever()
 
-    # Örnek LLM entegrasyonu (yerel ya da huggingface gibi)
-    from langchain.llms import HuggingFaceHub
-    llm = HuggingFaceHub(repo_id="mistralai/Mistral-7B-Instruct-v0.1", model_kwargs={"temperature": 0.7})
-
     qa_chain = ConversationalRetrievalChain.from_llm(llm, retriever=retriever)
 
     user_input = st.chat_input("Belgelere dair bir soru sorun...")
@@ -71,5 +65,6 @@ if uploaded_files:
             st.markdown(q)
         with st.chat_message("assistant", avatar="\U0001F916"):
             st.markdown(a)
+
 else:
     st.info("Sohbete başlamadan önce en az bir belge yükleyin.")
