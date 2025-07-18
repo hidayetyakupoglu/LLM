@@ -8,7 +8,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
-os.environ["OPENAI_API_KEY"] = st.secrets["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"]
+os.environ["OPENAI_API_KEY"] = st.secrets["general"]["openrouter_key"]
 os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
 
 st.set_page_config(page_title="🧠 Multi-Doc LLM Q&A", layout="wide")
