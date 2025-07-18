@@ -11,6 +11,8 @@ st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
 st.title("\U0001F4AC Chat with Your Documents")
 
 # LLM nesnesi tek yerde, token parametresi ile tanımlanıyor
+from langchain_community.llms import HuggingFaceEndpoint
+
 llm = HuggingFaceEndpoint(
     repo_id="mistralai/Mistral-7B-Instruct-v0.1",
     task="text-generation",
