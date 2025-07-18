@@ -5,14 +5,19 @@ from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2t
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.chains import RetrievalQA
+from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 
+# API ayarları
 os.environ["OPENAI_API_KEY"] = st.secrets["general"]["openrouter_key"]
 os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
 
-st.set_page_config(page_title="🧠 Multi-Doc LLM Q&A", layout="wide")
-st.title("📄 Multi-Document Q&A with Free LLM (Mistral via OpenRouter)")
+st.set_page_config(page_title="🧠 Chat with Multi-Docs", layout="wide")
+st.title("💬 Chat with Your Documents")
+
+# Oturum geçmişi
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
 uploaded_files = st.file_uploader("PDF, TXT veya DOCX dosyalarını yükleyin", type=["pdf", "txt", "docx"], accept_multiple_files=True)
 
@@ -35,11 +40,10 @@ if uploaded_files:
 
     st.success(f"{len(all_docs)} doküman yüklendi.")
 
-    st.info("Parçalanıyor ve embedding yapılıyor...")
     splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = splitter.split_documents(all_docs)
 
-    embeddings = HuggingFaceEmbeddings()
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     db = FAISS.from_documents(chunks, embeddings)
     retriever = db.as_retriever()
 
@@ -49,12 +53,20 @@ if uploaded_files:
         openai_api_key=os.environ["OPENAI_API_KEY"],
         openai_api_base=os.environ["OPENAI_API_BASE"]
     )
-    qa = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
-    user_q = st.text_input("Sorunuz:")
-    if user_q:
-        with st.spinner("Yanıt oluşturuluyor..."):
-            ans = qa.run(user_q)
-            st.success(ans)
+    qa_chain = ConversationalRetrievalChain.from_llm(llm, retriever=retriever)
+
+    user_input = st.chat_input("Belgelere dair bir soru sorun...")
+    if user_input:
+        with st.spinner("Yanıt üretiliyor..."):
+            result = qa_chain.invoke({"question": user_input, "chat_history": st.session_state.chat_history})
+            st.session_state.chat_history.append((user_input, result["answer"]))
+
+    # Geçmiş konuşmaları göster
+    for q, a in st.session_state.chat_history:
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(q)
+        with st.chat_message("assistant", avatar="🤖"):
+            st.markdown(a)
 else:
-    st.info("Başlamak için en az bir dosya yükleyin.")
+    st.info("Sohbete başlamadan önce en az bir belge yükleyin.")
