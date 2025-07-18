@@ -12,11 +12,9 @@ st.title("\U0001F4AC Chat with Your Documents")
 
 # LLM nesnesi tek yerde, token parametresi ile tanımlanıyor
 llm = HuggingFaceHub(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.1",
-    model_kwargs={"temperature": 0.7},
+    repo_id="google/flan-t5-base",
     huggingfacehub_api_token=st.secrets["huggingface"]["token"]
 )
-
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
