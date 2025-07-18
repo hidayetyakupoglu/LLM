@@ -5,18 +5,14 @@ Bu proje, PDF/TXT/DOCX dosyalarınızı yükleyip içlerinden doğal dilde yanı
 ## ⚙️ Kurulum
 
 ```bash
-git clone https://github.com/USERNAME/multi-doc-llm-streamlit.git
-cd multi-doc-llm-streamlit
 python -m venv venv
-source venv/bin/activate  # veya Windows için venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
 ## 🔑 OpenRouter API
 
-Streamlit secrets dosyasına API anahtarınızı girin:
-
-`.streamlit/secrets.toml`:
+`.streamlit/secrets.toml` içeriği:
 ```
 [general]
 openrouter_key = "YOUR_OPENROUTER_API_KEY"

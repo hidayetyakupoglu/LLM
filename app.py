@@ -1,14 +1,13 @@
 import streamlit as st
 import os
 import tempfile
-from langchain.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
-# OpenRouter API bilgilerinizi buraya girin
 os.environ["OPENAI_API_KEY"] = st.secrets["openrouter_key"]
 os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
 
