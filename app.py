@@ -25,7 +25,8 @@ try:
         max_new_tokens=512
     )
 except Exception as e:
-    st.error(f"Failed to initialize LLM: {str(e)}")
+    st.error(f"LLM başlatılamadı: {str(e)}")
+    st.info("Lütfen Hugging Face API tokenınızı kontrol edin. Tokenınızı https://huggingface.co/settings/tokens adresinden alabilirsiniz.")
     st.stop()
 
 # File uploader
@@ -54,7 +55,7 @@ if uploaded_files:
             all_docs.extend(docs)
             os.unlink(path)  # Clean up temporary file
         except Exception as e:
-            st.warning(f"Error loading file {file.name}: {str(e)}")
+            st.warning(f"Dosya yüklenirken hata oluştu {file.name}: {str(e)}")
 
     if all_docs:
         st.success(f"{len(all_docs)} doküman yüklendi.")
@@ -75,7 +76,7 @@ if uploaded_files:
                         result = qa_chain.invoke({"question": user_input, "chat_history": st.session_state.chat_history})
                         st.session_state.chat_history.append((user_input, result["answer"]))
                     except Exception as e:
-                        st.error(f"Error processing question: {str(e)}")
+                        st.error(f"Soru işlenirken hata: {str(e)}")
 
             for q, a in st.session_state.chat_history:
                 with st.chat_message("user", avatar="\U0001F464"):
@@ -83,8 +84,8 @@ if uploaded_files:
                 with st.chat_message("assistant", avatar="\U0001F916"):
                     st.markdown(a)
         except Exception as e:
-            st.error(f"Error processing documents: {str(e)}")
+            st.error(f"Dokümanlar işlenirken hata: {str(e)}")
     else:
-        st.warning("No valid documents loaded.")
+        st.warning("Geçerli doküman yüklenmedi.")
 else:
     st.info("Sohbete başlamadan önce en az bir belge yükleyin.")
