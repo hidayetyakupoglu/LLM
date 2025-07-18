@@ -11,13 +11,12 @@ st.set_page_config(page_title="\U0001F9E0 Chat with Multi-Docs", layout="wide")
 st.title("\U0001F4AC Chat with Your Documents")
 
 # LLM nesnesi tek yerde, token parametresi ile tanımlanıyor
-from langchain_community.llms import HuggingFaceEndpoint
-
 llm = HuggingFaceEndpoint(
-    repo_id="google/flan-t5-large",  # Daha büyük ve erişilebilir bir model
-    huggingfacehub_api_token="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",
+    repo_id="mistralai/Mistral-7B-Instruct-v0.1",
+    task="text-generation",
+    huggingfacehub_api_token=st.secrets["huggingface"]["token"],
     temperature=0.7,
-    max_length=512
+    max_new_tokens=512
 )
 
 if "chat_history" not in st.session_state:
